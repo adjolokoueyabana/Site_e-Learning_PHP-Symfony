@@ -1,0 +1,35 @@
+{{ form_start(
+    form,
+    {
+        attr: {
+            novalidate: 'novalidate'
+        }
+    }
+) }}
+
+    <div class="admin-form-fields">
+        {{ form_row(form.course) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.content) }}
+        {{ form_row(form.videoUrl) }}
+        {{ form_row(form.price) }}
+        {{ form_row(form.position) }}
+    </div>
+
+    <div class="admin-form-actions">
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            {{ button_label|default('Enregistrer') }}
+        </button>
+
+        <a
+            href="{{ path('app_admin_lesson_index') }}"
+            class="btn btn-secondary"
+        >
+            Annuler
+        </a>
+    </div>
+
+{{ form_end(form) }}

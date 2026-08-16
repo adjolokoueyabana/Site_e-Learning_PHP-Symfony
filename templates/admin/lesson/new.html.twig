@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Ajouter une leçon | Administration
+{% endblock %}
+
+{% block meta_description %}
+    Ajouter une leçon à Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="admin-form-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Administration
+            </p>
+
+            <h1 class="page-title">
+                Ajouter une leçon
+            </h1>
+
+            <p class="page-introduction">
+                Ajoutez une nouvelle leçon
+                à l'un des cursus du catalogue.
+            </p>
+        </header>
+
+        <div class="card admin-form-card">
+            {{ include(
+                'admin/lesson/_form.html.twig',
+                {
+                    form: form,
+                    button_label: 'Créer la leçon'
+                }
+            ) }}
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Gestion des cursus | Administration
+{% endblock %}
+
+{% block meta_description %}
+    Gestion administrative des cursus Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="admin-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Administration
+            </p>
+
+            <h1 class="page-title">
+                Gestion des cursus
+            </h1>
+
+            <p class="page-introduction">
+                Créez et modifiez les cursus,
+                leurs thèmes et leurs tarifs.
+            </p>
+        </header>
+
+        <div class="admin-page-actions">
+            <a
+                href="{{ path('app_admin_course_new') }}"
+                class="btn btn-primary"
+            >
+                Ajouter un cursus
+            </a>
+
+            <a
+                href="{{ path('app_admin_dashboard') }}"
+                class="btn btn-secondary"
+            >
+                Tableau de bord
+            </a>
+        </div>
+
+        {% if courses is empty %}
+            <div class="card empty-state">
+                <p>
+                    Aucun cursus n'est actuellement disponible.
+                </p>
+            </div>
+        {% else %}
+            <div class="admin-table-wrapper">
+                <table class="admin-table admin-course-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Cursus
+                            </th>
+
+                            <th>
+                                Thème
+                            </th>
+
+                            <th>
+                                Prix
+                            </th>
+
+                            <th>
+                                Leçons
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for course in courses %}
+                            <tr>
+                                <td>
+                                    <strong>
+                                        {{ course.title }}
+                                    </strong>
+
+                                    <div class="admin-table-secondary">
+                                        {{ course.slug }}
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {{ course.theme.name }}
+                                </td>
+
+                                <td>
+                                    {{ course.price|number_format(2, ',', ' ') }} €
+                                </td>
+
+                                <td>
+                                    {{ course.lessons|length }}
+                                </td>
+
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <a
+                                            href="{{ path(
+                                                'app_admin_course_edit',
+                                                { id: course.id }
+                                            ) }}"
+                                            class="btn btn-secondary"
+                                        >
+                                            Modifier
+                                        </a>
+
+                                        <form
+                                            method="post"
+                                            action="{{ path(
+                                                'app_admin_course_delete',
+                                                { id: course.id }
+                                            ) }}"
+                                            onsubmit="return confirm('Confirmer la suppression de ce cursus ?');"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="_token"
+                                                value="{{ csrf_token(
+                                                    'delete_course_' ~ course.id
+                                                ) }}"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger"
+                                                {% if course.lessons is not empty %}
+                                                    disabled
+                                                    title="Supprimez d'abord les leçons de ce cursus."
+                                                {% endif %}
+                                            >
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {% if course.description %}
+                                <tr class="admin-table-description">
+                                    <td colspan="5">
+                                        {{ course.description }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

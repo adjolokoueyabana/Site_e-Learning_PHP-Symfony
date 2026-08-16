@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Gestion des thèmes | Administration
+{% endblock %}
+
+{% block meta_description %}
+    Gestion administrative des thèmes Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="admin-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Administration
+            </p>
+
+            <h1 class="page-title">
+                Gestion des thèmes
+            </h1>
+
+            <p class="page-introduction">
+                Créez, modifiez et organisez les thèmes
+                proposés dans le catalogue.
+            </p>
+        </header>
+
+        <div class="admin-page-actions">
+            <a
+                href="{{ path('app_admin_theme_new') }}"
+                class="btn btn-primary"
+            >
+                Ajouter un thème
+            </a>
+
+            <a
+                href="{{ path('app_admin_dashboard') }}"
+                class="btn btn-secondary"
+            >
+                Tableau de bord
+            </a>
+        </div>
+
+        {% if themes is empty %}
+            <div class="card empty-state">
+                <p>
+                    Aucun thème n'est actuellement disponible.
+                </p>
+            </div>
+        {% else %}
+            <div class="admin-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Nom
+                            </th>
+
+                            <th>
+                                Slug
+                            </th>
+
+                            <th>
+                                Cursus
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for theme in themes %}
+                            <tr>
+                                <td>
+                                    <strong>
+                                        {{ theme.name }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {{ theme.slug }}
+                                </td>
+
+                                <td>
+                                    {{ theme.courses|length }}
+                                </td>
+
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <a
+                                            href="{{ path(
+                                                'app_admin_theme_edit',
+                                                { id: theme.id }
+                                            ) }}"
+                                            class="btn btn-secondary"
+                                        >
+                                            Modifier
+                                        </a>
+
+                                        <form
+                                            method="post"
+                                            action="{{ path(
+                                                'app_admin_theme_delete',
+                                                { id: theme.id }
+                                            ) }}"
+                                            onsubmit="return confirm('Confirmer la suppression de ce thème ?');"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="_token"
+                                                value="{{ csrf_token(
+                                                    'delete_theme_' ~ theme.id
+                                                ) }}"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger"
+                                                {% if theme.courses is not empty %}
+                                                    disabled
+                                                    title="Supprimez d'abord les cursus de ce thème."
+                                                {% endif %}
+                                            >
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {% if theme.description %}
+                                <tr class="admin-table-description">
+                                    <td colspan="4">
+                                        {{ theme.description }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Mes certifications | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    Retrouvez les certifications obtenues sur Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="certification-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Mon espace
+            </p>
+
+            <h1 class="page-title">
+                Mes certifications
+            </h1>
+
+            <p class="page-introduction">
+                Retrouvez ici les certifications obtenues
+                après validation complète d'un thème.
+            </p>
+        </header>
+
+        {% if certifications is empty %}
+            <div class="card empty-state">
+                <div>
+                    <h2>
+                        Aucune certification pour le moment
+                    </h2>
+
+                    <p>
+                        Une certification vous sera attribuée
+                        lorsque tous les cursus d'un thème
+                        auront été terminés.
+                    </p>
+                </div>
+
+                <a
+                    href="{{ path('app_my_training') }}"
+                    class="btn btn-primary"
+                >
+                    Voir mes formations
+                </a>
+            </div>
+        {% else %}
+            <div class="certification-grid">
+                {% for certification in certifications %}
+                    <article class="card certification-card">
+                        <div class="certification-card-header">
+                            <span class="certification-badge">
+                                Certification obtenue
+                            </span>
+
+                            <p class="page-eyebrow">
+                                Knowledge Learning
+                            </p>
+
+                            <h2>
+                                {{ certification.theme.name }}
+                            </h2>
+                        </div>
+
+                        <div class="certification-card-content">
+                            <p>
+                                Cette certification atteste que
+                                <strong>
+                                    {{ app.user.firstName }}
+                                    {{ app.user.lastName }}
+                                </strong>
+                                a terminé l'ensemble des cursus
+                                du thème
+                                « {{ certification.theme.name }} ».
+                            </p>
+
+                            <dl class="certification-details">
+                                <div>
+                                    <dt>
+                                        Numéro
+                                    </dt>
+
+                                    <dd>
+                                        {{ certification.certificateNumber }}
+                                    </dd>
+                                </div>
+
+                                <div>
+                                    <dt>
+                                        Date d'obtention
+                                    </dt>
+
+                                    <dd>
+                                        {{ certification.issuedAt|date('d/m/Y') }}
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="certification-card-actions">
+                            <a
+                                href="{{ path(
+                                    'app_certification_show',
+                                    { id: certification.id }
+                                ) }}"
+                                class="btn btn-primary"
+                            >
+                                Voir le certificat
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="page-actions">
+            <a
+                href="{{ path('app_my_training') }}"
+                class="btn btn-secondary"
+            >
+                Retour à mes formations
+            </a>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Ajouter un cursus | Administration
+{% endblock %}
+
+{% block meta_description %}
+    Ajouter un cursus à Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="admin-form-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Administration
+            </p>
+
+            <h1 class="page-title">
+                Ajouter un cursus
+            </h1>
+
+            <p class="page-introduction">
+                Créez un cursus et rattachez-le
+                à l'un des thèmes du catalogue.
+            </p>
+        </header>
+
+        <div class="card admin-form-card">
+            {{ include(
+                'admin/course/_form.html.twig',
+                {
+                    form: form,
+                    button_label: 'Créer le cursus'
+                }
+            ) }}
+        </div>
+    </section>
+{% endblock %}

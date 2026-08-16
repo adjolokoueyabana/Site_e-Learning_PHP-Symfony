@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Gestion des leçons | Administration
+{% endblock %}
+
+{% block meta_description %}
+    Gestion administrative des leçons Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="admin-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Administration
+            </p>
+
+            <h1 class="page-title">
+                Gestion des leçons
+            </h1>
+
+            <p class="page-introduction">
+                Gérez les contenus pédagogiques,
+                les vidéos, les tarifs et l'ordre des leçons.
+            </p>
+        </header>
+
+        <div class="admin-page-actions">
+            <a
+                href="{{ path('app_admin_lesson_new') }}"
+                class="btn btn-primary"
+            >
+                Ajouter une leçon
+            </a>
+
+            <a
+                href="{{ path('app_admin_dashboard') }}"
+                class="btn btn-secondary"
+            >
+                Tableau de bord
+            </a>
+        </div>
+
+        {% if lessons is empty %}
+            <div class="card empty-state">
+                <p>
+                    Aucune leçon n'est actuellement disponible.
+                </p>
+            </div>
+        {% else %}
+            <div class="admin-table-wrapper">
+                <table class="admin-table admin-lesson-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Leçon
+                            </th>
+
+                            <th>
+                                Cursus
+                            </th>
+
+                            <th>
+                                Position
+                            </th>
+
+                            <th>
+                                Prix
+                            </th>
+
+                            <th>
+                                Vidéo
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for lesson in lessons %}
+                            <tr>
+                                <td>
+                                    <strong>
+                                        {{ lesson.title }}
+                                    </strong>
+
+                                    <div class="admin-table-secondary">
+                                        {{ lesson.slug }}
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {{ lesson.course.title }}
+                                </td>
+
+                                <td>
+                                    {{ lesson.position }}
+                                </td>
+
+                                <td>
+                                    {{ lesson.price|number_format(2, ',', ' ') }} €
+                                </td>
+
+                                <td>
+                                    {% if lesson.videoUrl %}
+                                        Oui
+                                    {% else %}
+                                        Non
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div class="admin-table-actions">
+                                        <a
+                                            href="{{ path(
+                                                'app_admin_lesson_edit',
+                                                { id: lesson.id }
+                                            ) }}"
+                                            class="btn btn-secondary"
+                                        >
+                                            Modifier
+                                        </a>
+
+                                        <form
+                                            method="post"
+                                            action="{{ path(
+                                                'app_admin_lesson_delete',
+                                                { id: lesson.id }
+                                            ) }}"
+                                            onsubmit="return confirm('Confirmer la suppression de cette leçon ?');"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="_token"
+                                                value="{{ csrf_token(
+                                                    'delete_lesson_' ~ lesson.id
+                                                ) }}"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger"
+                                            >
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr class="admin-table-description">
+                                <td colspan="6">
+                                    {{ lesson.content|striptags|slice(0, 160) }}
+                                    {% if lesson.content|length > 160 %}
+                                        …
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

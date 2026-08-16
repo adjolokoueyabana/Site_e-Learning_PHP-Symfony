@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Accès refusé | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    Vous n'avez pas les droits nécessaires pour accéder à cette page.
+{% endblock %}
+
+{% block body %}
+    <section class="error-page">
+        <div class="card error-card">
+            <p class="page-eyebrow">
+                Erreur 403
+            </p>
+
+            <h1 class="page-title">
+                Accès refusé
+            </h1>
+
+            <p>
+                Vous n'avez pas les droits nécessaires
+                pour accéder à cette page.
+            </p>
+
+            <div class="error-actions">
+                <a
+                    href="{{ path('app_home') }}"
+                    class="btn btn-primary"
+                >
+                    Retour à l'accueil
+                </a>
+
+                {% if app.user %}
+                    {% if is_granted('ROLE_CLIENT') %}
+                        <a
+                            href="{{ path('app_my_training') }}"
+                            class="btn btn-secondary"
+                        >
+                            Mes formations
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a
+                        href="{{ path('app_login') }}"
+                        class="btn btn-secondary"
+                    >
+                        Se connecter
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{{ form_start(form) }}
+
+    <div class="admin-form-fields">
+        {{ form_row(form.theme) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.price) }}
+    </div>
+
+    <div class="admin-form-actions">
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            {{ button_label|default('Enregistrer') }}
+        </button>
+
+        <a
+            href="{{ path('app_admin_course_index') }}"
+            class="btn btn-secondary"
+        >
+            Annuler
+        </a>
+    </div>
+
+{{ form_end(form) }}

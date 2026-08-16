@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Formations | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    Découvrez tous les thèmes et cursus proposés par Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="training-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Catalogue
+            </p>
+
+            <h1 class="page-title">
+                Nos formations
+            </h1>
+
+            <p class="page-introduction">
+                Choisissez un thème puis découvrez les cursus proposés
+                par Knowledge Learning.
+            </p>
+        </header>
+
+        {% if themes is empty %}
+            <div class="alert">
+                <p>
+                    Aucune formation n'est actuellement disponible.
+                </p>
+            </div>
+        {% else %}
+            <div class="theme-list">
+                {% for theme in themes %}
+                    <section class="theme-section">
+                        <div class="theme-header">
+                            <div>
+                                <h2 class="theme-title">
+                                    {{ theme.name }}
+                                </h2>
+
+                                {% if theme.description %}
+                                    <p class="theme-description">
+                                        {{ theme.description }}
+                                    </p>
+                                {% endif %}
+                            </div>
+
+                            <span class="theme-course-count">
+                                {{ theme.courses|length }}
+                                {% if theme.courses|length > 1 %}
+                                    cursus
+                                {% else %}
+                                    cursus
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        {% if theme.courses is empty %}
+                            <p>
+                                Aucun cursus n'est disponible pour ce thème.
+                            </p>
+                        {% else %}
+                            <div class="course-grid">
+                                {% for course in theme.courses %}
+                                    <article class="course-card">
+                                        <div class="course-card-content">
+                                            <p class="course-theme">
+                                                {{ theme.name }}
+                                            </p>
+
+                                            <h3 class="course-title">
+                                                {{ course.title }}
+                                            </h3>
+
+                                            {% if course.description %}
+                                                <p class="course-description">
+                                                    {{ course.description }}
+                                                </p>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="course-card-footer">
+                                            <p class="course-price">
+                                                {{ course.price|number_format(2, ',', ' ') }} €
+                                            </p>
+
+                                            <a
+                                               href="{{ path('app_course_show', { slug: course.slug }) }}"
+                                               class="btn btn-primary"
+                                            >
+                                                Voir le cursus
+                                            </a>
+                                        </div>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </section>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

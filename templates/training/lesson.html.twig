@@ -1,0 +1,225 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ lesson.title }} | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    Découvrez la leçon {{ lesson.title }} sur Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="lesson-detail">
+        <header class="lesson-detail-header">
+            <p class="page-eyebrow">
+                {{ lesson.course.theme.name }}
+                —
+                {{ lesson.course.title }}
+            </p>
+
+            <h1 class="page-title">
+                {{ lesson.title }}
+            </h1>
+
+            <p class="lesson-price">
+                {{ lesson.price|number_format(2, ',', ' ') }} €
+            </p>
+        </header>
+
+        {% if canAccessLesson %}
+            <div class="alert alert-success">
+                <p>
+                    Vous avez accès à cette leçon.
+                </p>
+            </div>
+
+            {% if isCourseCompleted %}
+                <div class="alert alert-success">
+                    <p>
+                        Félicitations ! Vous avez terminé toutes les
+                        leçons du cursus « {{ lesson.course.title }} ».
+                    </p>
+
+                    <p>
+                        Ce cursus est maintenant validé.
+                    </p>
+                </div>
+            {% endif %}
+
+            <div class="lesson-detail-content">
+                <section class="lesson-sheet card">
+                    <h2>
+                        Fiche de cours
+                    </h2>
+
+                    <div class="lesson-content">
+                        {{ lesson.content|nl2br }}
+                    </div>
+                </section>
+
+                <section class="lesson-video card">
+                    <h2>
+                        Vidéo
+                    </h2>
+
+                    {% if lesson.videoUrl %}
+                        <div class="video-wrapper">
+                            <iframe
+                                src="{{ lesson.videoUrl }}"
+                                title="Vidéo - {{ lesson.title }}"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                    {% else %}
+                        <div class="video-placeholder">
+                            <p>
+                                La vidéo de cette leçon sera bientôt disponible.
+                            </p>
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
+
+        {% else %}
+            <section class="lesson-access-locked card">
+                <h2>
+                    Contenu réservé
+                </h2>
+
+                <p>
+                    La fiche de cours et la vidéo sont accessibles
+                    après l'achat de cette leçon ou du cursus complet.
+                </p>
+
+                {% if app.user %}
+                    {% if app.user.isVerified %}
+                        <form
+                            method="post"
+                            action="{{ path(
+                                'app_purchase_lesson',
+                                { slug: lesson.slug }
+                            ) }}"
+                        >
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token(
+                                    'purchase_lesson_' ~ lesson.id
+                                ) }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Acheter la leçon
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-danger">
+                            <p>
+                                Vous devez activer votre compte
+                                avant de pouvoir effectuer un achat.
+                            </p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <a
+                        href="{{ path('app_login') }}"
+                        class="btn btn-primary"
+                    >
+                        Se connecter pour acheter
+                    </a>
+                {% endif %}
+            </section>
+        {% endif %}
+
+        <nav
+            class="lesson-bottom-actions"
+            aria-label="Actions et navigation de la leçon"
+        >
+            <div class="lesson-bottom-left">
+                {% if canAccessLesson %}
+                    {% if isLessonCompleted %}
+                        <button
+                            type="button"
+                            class="btn btn-success"
+                            disabled
+                        >
+                            Leçon terminée
+                        </button>
+                    {% else %}
+                        <form
+                            method="post"
+                            action="{{ path(
+                                'app_lesson_complete',
+                                { slug: lesson.slug }
+                            ) }}"
+                        >
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token(
+                                    'complete_lesson_' ~ lesson.id
+                                ) }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="btn btn-success"
+                            >
+                                Valider la leçon
+                            </button>
+                        </form>
+                    {% endif %}
+                {% elseif previousLesson and canAccessPreviousLesson %}
+                    <a
+                        href="{{ path(
+                            'app_lesson_show',
+                            { slug: previousLesson.slug }
+                        ) }}"
+                        class="btn btn-secondary"
+                    >
+                        ← Leçon précédente
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="lesson-bottom-center">
+                <a
+                    href="{{ path(
+                        'app_course_show',
+                        { slug: lesson.course.slug }
+                    ) }}"
+                    class="btn btn-secondary"
+                >
+                    Voir le cursus
+                </a>
+            </div>
+
+            <div class="lesson-bottom-right">
+                {% if nextLesson and canAccessNextLesson %}
+                    <a
+                        href="{{ path(
+                            'app_lesson_show',
+                            { slug: nextLesson.slug }
+                        ) }}"
+                        class="btn btn-primary"
+                    >
+                        Leçon suivante →
+                    </a>
+                {% elseif isCourseCompleted %}
+                    <a
+                        href="{{ path(
+                            'app_course_show',
+                            { slug: lesson.course.slug }
+                        ) }}"
+                        class="btn btn-success"
+                    >
+                        Cursus terminé
+                    </a>
+                {% endif %}
+            </div>
+        </nav>
+    </section>
+{% endblock %}

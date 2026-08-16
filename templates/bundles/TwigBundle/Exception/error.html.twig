@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Une erreur est survenue | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    Une erreur est survenue sur Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="error-page">
+        <div class="card error-card">
+            <p class="page-eyebrow">
+                Erreur {{ status_code|default('') }}
+            </p>
+
+            <h1 class="page-title">
+                Une erreur est survenue
+            </h1>
+
+            <p>
+                Une erreur inattendue s'est produite.
+                Vous pouvez retourner à l'accueil
+                et réessayer dans quelques instants.
+            </p>
+
+            <div class="error-actions">
+                <a
+                    href="{{ path('app_home') }}"
+                    class="btn btn-primary"
+                >
+                    Retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

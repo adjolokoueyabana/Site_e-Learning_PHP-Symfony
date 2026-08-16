@@ -1,0 +1,32 @@
+parameters:
+    mail_from_address: '%env(MAIL_FROM_ADDRESS)%'
+    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
+    stripe_webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    App\Service\AccountActivationService:
+        arguments:
+            $mailFromAddress: '%mail_from_address%'
+
+    App\Service\PasswordResetService:
+        arguments:
+            $mailFromAddress: '%mail_from_address%'
+
+    App\Service\StripePaymentService:
+        arguments:
+            $stripeSecretKey: '%stripe_secret_key%'
+
+    App\Controller\StripeWebhookController:
+        arguments:
+            $stripeWebhookSecret: '%stripe_webhook_secret%'

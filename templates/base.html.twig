@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+            Knowledge Learning
+        {% endblock %}
+    </title>
+
+    <meta
+        name="description"
+        content="{% block meta_description %}Plateforme e-learning Knowledge Learning{% endblock %}"
+    >
+
+    {% block stylesheets %}
+    {% endblock %}
+
+    {% block javascripts %}
+        {% block importmap %}
+            {{ importmap('app') }}
+        {% endblock %}
+    {% endblock %}
+</head>
+
+<body>
+    {% set currentRoute = app.request.attributes.get('_route') %}
+
+    <header class="site-header">
+        <div class="container header-container">
+            <a
+                href="{{ path('app_home') }}"
+                class="site-logo"
+                aria-label="Accueil Knowledge Learning"
+            >
+                Knowledge Learning
+            </a>
+
+            <nav
+                class="main-navigation"
+                aria-label="Navigation principale"
+            >
+                <ul>
+                    <li>
+                        <a
+                            href="{{ path('app_home') }}"
+                            class="{% if currentRoute == 'app_home' %}active{% endif %}"
+                            {% if currentRoute == 'app_home' %}
+                                aria-current="page"
+                            {% endif %}
+                        >
+                            Accueil
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="{{ path('app_training_index') }}"
+                            class="{% if currentRoute starts with 'app_training_' or currentRoute starts with 'app_course_' or currentRoute starts with 'app_lesson_' %}active{% endif %}"
+                            {% if currentRoute starts with 'app_training_' or currentRoute starts with 'app_course_' or currentRoute starts with 'app_lesson_' %}
+                                aria-current="page"
+                            {% endif %}
+                        >
+                            Catalogue
+                        </a>
+                    </li>
+
+                    {% if app.user %}
+                        {% if is_granted('ROLE_CLIENT') %}
+                            <li>
+                                <a
+                                    href="{{ path('app_my_training') }}"
+                                    class="{% if currentRoute starts with 'app_my_training' %}active{% endif %}"
+                                    {% if currentRoute starts with 'app_my_training' %}
+                                        aria-current="page"
+                                    {% endif %}
+                                >
+                                    Mes formations
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    href="{{ path('app_certification_index') }}"
+                                    class="{% if currentRoute starts with 'app_certification' %}active{% endif %}"
+                                    {% if currentRoute starts with 'app_certification' %}
+                                        aria-current="page"
+                                    {% endif %}
+                                >
+                                    Mes certifications
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li>
+                                <a
+                                    href="{{ path('app_admin_dashboard') }}"
+                                    class="{% if currentRoute starts with 'app_admin_' %}active{% endif %}"
+                                    {% if currentRoute starts with 'app_admin_' %}
+                                        aria-current="page"
+                                    {% endif %}
+                                >
+                                    Administration
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li>
+                            <a href="{{ path('app_logout') }}">
+                                Déconnexion
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a
+                                href="{{ path('app_login') }}"
+                                class="{% if currentRoute == 'app_login' %}active{% endif %}"
+                                {% if currentRoute == 'app_login' %}
+                                    aria-current="page"
+                                {% endif %}
+                            >
+                                Connexion
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="{{ path('app_register') }}"
+                                class="{% if currentRoute == 'app_register' %}active{% endif %}"
+                                {% if currentRoute == 'app_register' %}
+                                    aria-current="page"
+                                {% endif %}
+                            >
+                                Inscription
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <div class="container">
+
+            {% if app.user %}
+                <div class="user-greeting">
+                    Bonjour {{ app.user.firstName }}
+                </div>
+            {% endif %}
+
+            {% for message in app.flashes('success') %}
+                <div
+                    class="alert alert-success"
+                    role="alert"
+                >
+                    <p>
+                        {{ message }}
+                    </p>
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('danger') %}
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                >
+                    <p>
+                        {{ message }}
+                    </p>
+                </div>
+            {% endfor %}
+
+            {% block body %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <p>
+                &copy; {{ "now"|date("Y") }}
+                Knowledge Learning.
+                Tous droits réservés.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

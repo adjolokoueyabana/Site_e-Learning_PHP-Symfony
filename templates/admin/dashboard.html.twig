@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Administration | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    Espace d'administration de Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="admin-dashboard">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Administration
+            </p>
+
+            <h1 class="page-title">
+                Tableau de bord
+            </h1>
+
+            <p class="page-introduction">
+                Gérez les contenus et les données
+                de la plateforme Knowledge Learning.
+            </p>
+        </header>
+
+        <div class="admin-dashboard-grid">
+            <article class="card admin-dashboard-card">
+                <div>
+                    <p class="page-eyebrow">
+                        Catalogue
+                    </p>
+
+                    <h2>
+                        Thèmes
+                    </h2>
+
+                    <p>
+                        Créez, modifiez et organisez
+                        les thèmes de formation.
+                    </p>
+                </div>
+
+                <a
+                    href="{{ path('app_admin_theme_index') }}"
+                    class="btn btn-primary"
+                >
+                    Gérer les thèmes
+                </a>
+            </article>
+
+            <article class="card admin-dashboard-card">
+                <div>
+                    <p class="page-eyebrow">
+                        Catalogue
+                    </p>
+
+                    <h2>
+                        Cursus
+                    </h2>
+
+                    <p>
+                        Gérez les cursus, leurs descriptions
+                        et leurs tarifs.
+                    </p>
+                </div>
+
+                <a
+                    href="{{ path('app_admin_course_index') }}"
+                    class="btn btn-primary"
+                >
+                    Gérer les cursus
+                </a>
+            </article>
+
+            <article class="card admin-dashboard-card">
+                <div>
+                    <p class="page-eyebrow">
+                        Pédagogie
+                    </p>
+
+                    <h2>
+                        Leçons
+                    </h2>
+
+                    <p>
+                        Gérez les fiches de cours,
+                        les vidéos, l'ordre et les tarifs.
+                    </p>
+                </div>
+
+                <a
+                    href="{{ path('app_admin_lesson_index') }}"
+                    class="btn btn-primary"
+                >
+                    Gérer les leçons
+                </a>
+            </article>
+
+            <article class="card admin-dashboard-card">
+                <div>
+                    <p class="page-eyebrow">
+                        Suivi
+                    </p>
+
+                    <h2>
+                        Utilisateurs et commandes
+                    </h2>
+
+                    <p>
+                        Consultez les utilisateurs,
+                        leurs comptes et leurs achats.
+                    </p>
+                </div>
+
+                <a
+                    href="{{ path('app_admin_user_index') }}"
+                    class="btn btn-primary"
+                >
+                    Voir les utilisateurs
+                </a>
+            </article>
+        </div>
+    </section>
+{% endblock %}

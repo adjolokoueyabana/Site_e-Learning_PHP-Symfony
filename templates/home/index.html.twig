@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Accueil | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    Découvrez les formations en ligne proposées par Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section>
+        <h1 class="page-title">
+            Bienvenue sur Knowledge Learning
+        </h1>
+
+        <div class="card">
+            <p>
+                Knowledge Learning vous permet d'apprendre à votre rythme
+                grâce à des cursus et des leçons accessibles en ligne.
+            </p>
+
+            <p>
+                Découvrez nos formations en musique,
+                informatique, jardinage et cuisine.
+            </p>
+
+            <a
+                href="{{ path('app_training_index') }}"
+                class="btn btn-primary"
+            >
+                Découvrir les formations
+            </a>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Page introuvable | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    La page demandée est introuvable.
+{% endblock %}
+
+{% block body %}
+    <section class="error-page">
+        <div class="card error-card">
+            <p class="page-eyebrow">
+                Erreur 404
+            </p>
+
+            <h1 class="page-title">
+                Page introuvable
+            </h1>
+
+            <p>
+                La page que vous recherchez n'existe pas
+                ou n'est plus disponible.
+            </p>
+
+            <div class="error-actions">
+                <a
+                    href="{{ path('app_home') }}"
+                    class="btn btn-primary"
+                >
+                    Retour à l'accueil
+                </a>
+
+                <a
+                    href="{{ path('app_training_catalog') }}"
+                    class="btn btn-secondary"
+                >
+                    Voir le catalogue
+                </a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

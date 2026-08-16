@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Gestion des utilisateurs | Administration
+{% endblock %}
+
+{% block meta_description %}
+    Consultation administrative des utilisateurs Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="admin-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Administration
+            </p>
+
+            <h1 class="page-title">
+                Utilisateurs
+            </h1>
+
+            <p class="page-introduction">
+                Consultez les comptes utilisateurs,
+                leur rôle, leur statut d'activation
+                et leurs commandes.
+            </p>
+        </header>
+
+        <div class="admin-page-actions">
+            <a
+                href="{{ path('app_admin_dashboard') }}"
+                class="btn btn-secondary"
+            >
+                Tableau de bord
+            </a>
+        </div>
+
+        {% if users is empty %}
+            <div class="card empty-state">
+                <p>
+                    Aucun utilisateur n'est disponible.
+                </p>
+            </div>
+        {% else %}
+            <div class="admin-table-wrapper">
+                <table class="admin-table admin-user-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Utilisateur
+                            </th>
+
+                            <th>
+                                E-mail
+                            </th>
+
+                            <th>
+                                Rôle
+                            </th>
+
+                            <th>
+                                Compte
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>
+                                    <strong>
+                                        {{ user.firstName }}
+                                        {{ user.lastName }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {{ user.email }}
+                                </td>
+
+                                <td>
+                                    {% if user.role %}
+                                        {{ user.role.name }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if user.isVerified %}
+                                        <span class="admin-status admin-status-success">
+                                            Activé
+                                        </span>
+                                    {% else %}
+                                        <span class="admin-status admin-status-warning">
+                                            Non activé
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div class="admin-table-actions">
+                                        {% if user.role and user.role.name == 'ROLE_CLIENT' %}
+                                            <a
+                                                href="{{ path(
+                                                    'app_admin_user_orders',
+                                                    { id: user.id }
+                                                ) }}"
+                                                class="btn btn-secondary"
+                                            >
+                                                Commandes
+                                            </a>
+
+                                            {% if not user.isVerified %}
+                                                <form
+                                                    method="post"
+                                                    action="{{ path(
+                                                        'app_admin_user_activate',
+                                                        { id: user.id }
+                                                    ) }}"
+                                                    onsubmit="return confirm('Activer ce compte utilisateur ?');"
+                                                >
+                                                    <input
+                                                        type="hidden"
+                                                        name="_token"
+                                                        value="{{ csrf_token(
+                                                            'activate_user_' ~ user.id
+                                                        ) }}"
+                                                    >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-primary"
+                                                    >
+                                                        Activer
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="admin-table-secondary">
+                                                Compte administrateur
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

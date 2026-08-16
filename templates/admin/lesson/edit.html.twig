@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Modifier {{ lesson.title }} | Administration
+{% endblock %}
+
+{% block meta_description %}
+    Modifier une leçon Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="admin-form-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Administration
+            </p>
+
+            <h1 class="page-title">
+                Modifier la leçon
+            </h1>
+
+            <p class="page-introduction">
+                Modifiez le contenu et les informations
+                de la leçon « {{ lesson.title }} ».
+            </p>
+        </header>
+
+        <div class="card admin-form-card">
+            {{ include(
+                'admin/lesson/_form.html.twig',
+                {
+                    form: form,
+                    button_label: 'Enregistrer les modifications'
+                }
+            ) }}
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Commandes de {{ user.firstName }} {{ user.lastName }} | Administration
+{% endblock %}
+
+{% block meta_description %}
+    Consultation des commandes d'un utilisateur Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="admin-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Administration
+            </p>
+
+            <h1 class="page-title">
+                Commandes de
+                {{ user.firstName }}
+                {{ user.lastName }}
+            </h1>
+
+            <p class="page-introduction">
+                {{ user.email }}
+            </p>
+        </header>
+
+        <div class="admin-page-actions">
+            <a
+                href="{{ path('app_admin_user_index') }}"
+                class="btn btn-secondary"
+            >
+                Retour aux utilisateurs
+            </a>
+        </div>
+
+        {% if orders is empty %}
+            <div class="card empty-state">
+                <p>
+                    Cet utilisateur n'a encore passé aucune commande.
+                </p>
+            </div>
+        {% else %}
+            <div class="admin-order-list">
+                {% for order in orders %}
+                    <article class="card admin-order-card">
+                        <div class="admin-order-header">
+                            <div>
+                                <p class="page-eyebrow">
+                                    Commande n°{{ order.id }}
+                                </p>
+
+                                <h2>
+                                    {{ order.totalAmount|number_format(2, ',', ' ') }} €
+                                </h2>
+                            </div>
+
+                            <div class="admin-order-header-actions">
+                                {% if order.status == 'paid' %}
+                                    <span class="admin-status admin-status-success">
+                                        Payée
+                                    </span>
+                                {% elseif order.status == 'pending' %}
+                                    <span class="admin-status admin-status-pending">
+                                        En attente
+                                    </span>
+                                {% else %}
+                                    <span class="admin-status admin-status-warning">
+                                        Annulée
+                                    </span>
+                                {% endif %}
+
+                                {% if order.status == 'pending' %}
+                                    <form
+                                        method="post"
+                                        action="{{ path(
+                                            'app_admin_order_cancel',
+                                            {
+                                                userId: user.id,
+                                                orderId: order.id
+                                            }
+                                        ) }}"
+                                        onsubmit="return confirm('Confirmer l’annulation de cette commande ?');"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="_token"
+                                            value="{{ csrf_token(
+                                                'cancel_order_' ~ order.id
+                                            ) }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-danger"
+                                        >
+                                            Annuler la commande
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="admin-order-meta">
+                            <p>
+                                <strong>
+                                    Créée le :
+                                </strong>
+
+                                {{ order.createdAt|date('d/m/Y H:i') }}
+                            </p>
+
+                            {% if order.stripeCheckoutSessionId %}
+                                <p>
+                                    <strong>
+                                        Session Stripe :
+                                    </strong>
+
+                                    <span class="admin-order-stripe">
+                                        {{ order.stripeCheckoutSessionId }}
+                                    </span>
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <div class="admin-order-items">
+                            <h3>
+                                Contenu de la commande
+                            </h3>
+
+                            <ul>
+                                {% for item in order.items %}
+                                    <li>
+                                        <div>
+                                            {% if item.course %}
+                                                <span class="admin-order-item-type">
+                                                    Cursus
+                                                </span>
+                                            {% elseif item.lesson %}
+                                                <span class="admin-order-item-type">
+                                                    Leçon
+                                                </span>
+                                            {% endif %}
+
+                                            <strong>
+                                                {{ item.titleSnapshot }}
+                                            </strong>
+                                        </div>
+
+                                        <span>
+                                            {{ item.unitPrice|number_format(2, ',', ' ') }} €
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -1,0 +1,259 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ course.title }} | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    Découvrez le cursus {{ course.title }} sur Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="course-detail">
+        <header class="course-detail-header">
+            <p class="page-eyebrow">
+                {{ course.theme.name }}
+            </p>
+
+            <h1 class="page-title">
+                {{ course.title }}
+            </h1>
+
+            {% if course.description %}
+                <p class="page-introduction">
+                    {{ course.description }}
+                </p>
+            {% endif %}
+        </header>
+
+        {% if ownsCourse %}
+            <section class="course-purchase-box card">
+                <div>
+                    {% if isCourseCompleted %}
+                        <div class="alert alert-success">
+                            <p>
+                                Félicitations ! Ce cursus est terminé.
+                            </p>
+                        </div>
+
+                        <h2>
+                            Cursus validé
+                        </h2>
+
+                        <p>
+                            Vous avez terminé
+                            {{ completedLessonCount }}
+                            leçon{% if completedLessonCount > 1 %}s{% endif %}
+                            sur
+                            {{ lessons|length }}.
+                        </p>
+                    {% else %}
+                        <h2>
+                            Votre progression
+                        </h2>
+
+                        <p>
+                            {{ completedLessonCount }}
+                            leçon{% if completedLessonCount > 1 %}s{% endif %}
+                            terminée{% if completedLessonCount > 1 %}s{% endif %}
+                            sur
+                            {{ lessons|length }}.
+                        </p>
+                    {% endif %}
+                </div>
+
+                <a
+                    href="{{ path('app_my_training') }}"
+                    class="btn btn-secondary"
+                >
+                    Mes formations
+                </a>
+            </section>
+
+        {% else %}
+            <section class="course-purchase-box card">
+                <div>
+                    <p class="course-price">
+                        {{ course.price|number_format(2, ',', ' ') }} €
+                    </p>
+
+                    <p>
+                        Achetez le cursus complet pour accéder
+                        à toutes ses leçons.
+                    </p>
+                </div>
+
+                {% if app.user %}
+                    {% if app.user.isVerified %}
+                        <form
+                            method="post"
+                            action="{{ path(
+                                'app_purchase_course',
+                                { slug: course.slug }
+                            ) }}"
+                        >
+                            <input
+                                type="hidden"
+                                name="_token"
+                                value="{{ csrf_token(
+                                    'purchase_course_' ~ course.id
+                                ) }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Acheter le cursus
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-danger">
+                            <p>
+                                Vous devez activer votre compte
+                                avant de pouvoir effectuer un achat.
+                            </p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <a
+                        href="{{ path('app_login') }}"
+                        class="btn btn-primary"
+                    >
+                        Se connecter pour acheter
+                    </a>
+                {% endif %}
+            </section>
+        {% endif %}
+
+        <section class="course-lessons">
+            <h2>
+                Leçons du cursus
+            </h2>
+
+            {% if lessons is empty %}
+                <div class="card">
+                    <p>
+                        Aucune leçon n'est actuellement disponible
+                        dans ce cursus.
+                    </p>
+                </div>
+            {% else %}
+                {% for lesson in lessons %}
+                    {% set state = lessonStates[lesson.id] %}
+
+                    <article class="lesson-card card">
+                        <div class="lesson-card-content">
+                            <p class="lesson-position">
+                                Leçon {{ lesson.position }}
+                            </p>
+
+                            <h3>
+                                {{ lesson.title }}
+                            </h3>
+
+                            {% if state.isCompleted %}
+                                <div class="alert alert-success">
+                                    <p>
+                                        Leçon terminée
+                                    </p>
+                                </div>
+                            {% elseif state.canAccess %}
+                                <p>
+                                    Cette leçon est accessible.
+                                </p>
+                            {% else %}
+                                <p class="lesson-price">
+                                    {{ lesson.price|number_format(2, ',', ' ') }} €
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <div class="lesson-card-actions">
+                            {% if state.canAccess %}
+                                <a
+                                    href="{{ path(
+                                        'app_lesson_show',
+                                        { slug: lesson.slug }
+                                    ) }}"
+                                    class="btn btn-secondary"
+                                >
+                                    {% if state.isCompleted %}
+                                        Revoir la leçon
+                                    {% else %}
+                                        Continuer
+                                    {% endif %}
+                                </a>
+
+                            {% elseif app.user %}
+                                <a
+                                    href="{{ path(
+                                        'app_lesson_show',
+                                        { slug: lesson.slug }
+                                    ) }}"
+                                    class="btn btn-secondary"
+                                >
+                                    Voir la leçon
+                                </a>
+
+                                {% if app.user.isVerified %}
+                                    <form
+                                        method="post"
+                                        action="{{ path(
+                                            'app_purchase_lesson',
+                                            { slug: lesson.slug }
+                                        ) }}"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="_token"
+                                            value="{{ csrf_token(
+                                                'purchase_lesson_' ~ lesson.id
+                                            ) }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-primary"
+                                        >
+                                            Acheter la leçon
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+                            {% else %}
+                                <a
+                                    href="{{ path(
+                                        'app_lesson_show',
+                                        { slug: lesson.slug }
+                                    ) }}"
+                                    class="btn btn-secondary"
+                                >
+                                    Voir la leçon
+                                </a>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
+            {% endif %}
+        </section>
+
+        <div class="page-actions">
+            {% if ownsCourse %}
+                <a
+                    href="{{ path('app_my_training') }}"
+                    class="btn btn-secondary"
+                >
+                    Retour à mes formations
+                </a>
+            {% else %}
+                <a
+                    href="{{ path('app_training_index') }}"
+                    class="btn btn-secondary"
+                >
+                    Retour au catalogue
+                </a>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

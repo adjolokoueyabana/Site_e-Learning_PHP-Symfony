@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Certification {{ certification.theme.name }} | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    Certification obtenue sur Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="certificate-page">
+        <div class="certificate-document">
+            <div class="certificate-inner">
+                <p class="certificate-brand">
+                    Knowledge Learning
+                </p>
+
+                <p class="certificate-label">
+                    Certificat de réussite
+                </p>
+
+                <h1>
+                    Certification
+                </h1>
+
+                <p class="certificate-introduction">
+                    Knowledge Learning certifie que
+                </p>
+
+                <p class="certificate-student-name">
+                    {{ app.user.firstName }}
+                    {{ app.user.lastName }}
+                </p>
+
+                <p class="certificate-text">
+                    a terminé avec succès l'ensemble des cursus
+                    et des leçons du thème
+                </p>
+
+                <h2 class="certificate-theme">
+                    {{ certification.theme.name }}
+                </h2>
+
+                <div class="certificate-meta">
+                    <div>
+                        <span>
+                            Numéro du certificat
+                        </span>
+
+                        <strong>
+                            {{ certification.certificateNumber }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>
+                            Date d'obtention
+                        </span>
+
+                        <strong>
+                            {{ certification.issuedAt|date('d/m/Y') }}
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="certificate-signature">
+                    <span>
+                        Knowledge Learning
+                    </span>
+
+                    <strong>
+                        Plateforme de formation
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="certificate-actions">
+            <a
+                href="{{ path('app_certification_index') }}"
+                class="btn btn-secondary"
+            >
+                Retour aux certifications
+            </a>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="window.print()"
+            >
+                Imprimer le certificat
+            </button>
+        </div>
+    </section>
+{% endblock %}

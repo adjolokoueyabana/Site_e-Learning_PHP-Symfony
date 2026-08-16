@@ -1,0 +1,391 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Mes formations | Knowledge Learning
+{% endblock %}
+
+{% block meta_description %}
+    Retrouvez vos cursus, vos leçons et votre progression sur Knowledge Learning.
+{% endblock %}
+
+{% block body %}
+    <section class="my-training-page">
+        <header class="page-header">
+            <p class="page-eyebrow">
+                Mon espace
+            </p>
+
+            <h1 class="page-title">
+                Mes formations
+            </h1>
+
+            <p class="page-introduction">
+                Retrouvez ici vos cursus et vos leçons,
+                suivez votre progression et reprenez votre apprentissage.
+            </p>
+        </header>
+
+        <section class="my-training-section">
+            <div class="section-heading">
+                <div>
+                    <h2 class="section-title">
+                        Mes contenus accessibles
+                    </h2>
+
+                    <p>
+                        Ces contenus correspondent à des achats
+                        dont le paiement a été confirmé.
+                    </p>
+                </div>
+            </div>
+
+            {% if paidOrders is empty %}
+                <div class="card empty-state">
+                    <p>
+                        Vous ne possédez encore aucune formation payée.
+                    </p>
+
+                    <a
+                        href="{{ path('app_training_index') }}"
+                        class="btn btn-primary"
+                    >
+                        Découvrir le catalogue
+                    </a>
+                </div>
+            {% else %}
+                <div class="my-training-grid">
+                    {% for order in paidOrders %}
+                        {% for item in order.items %}
+
+                            {% if item.course %}
+                                {% set progress = courseProgress[item.course.id] %}
+
+                                <article class="card my-training-card my-course-card">
+                                    <div class="my-training-card-content">
+                                        <div class="training-card-top">
+                                            <span class="training-status training-status-paid">
+                                                Payé
+                                            </span>
+
+                                            {% if progress.isCompleted %}
+                                                <span class="training-status training-status-completed">
+                                                    Cursus terminé
+                                                </span>
+                                            {% endif %}
+                                        </div>
+
+                                        <p class="training-type">
+                                            Cursus complet
+                                        </p>
+
+                                        <h3>
+                                            {{ item.titleSnapshot }}
+                                        </h3>
+
+                                        <p class="training-price">
+                                            {{ item.unitPrice|number_format(2, ',', ' ') }} €
+                                        </p>
+
+                                        <div class="course-progress">
+                                            <div class="course-progress-heading">
+                                                <strong>
+                                                    Progression
+                                                </strong>
+
+                                                <span>
+                                                    {{ progress.completed }}
+                                                    /
+                                                    {{ progress.total }}
+                                                    leçon{% if progress.total > 1 %}s{% endif %}
+                                                </span>
+                                            </div>
+
+                                            {% set progressPercentage =
+                                                progress.total > 0
+                                                    ? (progress.completed / progress.total * 100)
+                                                    : 0
+                                            %}
+
+                                            <div
+                                                class="course-progress-bar"
+                                                role="progressbar"
+                                                aria-valuenow="{{ progressPercentage|round }}"
+                                                aria-valuemin="0"
+                                                aria-valuemax="100"
+                                                aria-label="Progression du cursus"
+                                            >
+                                                <span
+                                                    style="width: {{ progressPercentage }}%;"
+                                                ></span>
+                                            </div>
+
+                                            {% if progress.isCompleted %}
+                                                <p class="course-progress-message">
+                                                    Toutes les leçons de ce cursus
+                                                    sont terminées.
+                                                </p>
+                                            {% elseif progress.completed > 0 %}
+                                                <p class="course-progress-message">
+                                                    Votre apprentissage est en cours.
+                                                    Continuez à votre rythme.
+                                                </p>
+                                            {% else %}
+                                                <p class="course-progress-message">
+                                                    Vous pouvez commencer ce cursus
+                                                    dès maintenant.
+                                                </p>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="owned-course-lessons">
+                                            <h4>
+                                                Leçons incluses
+                                            </h4>
+
+                                            {% if item.course.lessons is not empty %}
+                                                <ul class="owned-lesson-list">
+                                                    {% for lesson in item.course.lessons %}
+                                                        {% set lessonCompleted =
+                                                            lessonProgressRepository is defined
+                                                            ? false
+                                                            : false
+                                                        %}
+
+                                                        <li class="owned-lesson-item">
+                                                            <div class="owned-lesson-information">
+                                                                <span class="owned-lesson-position">
+                                                                    Leçon {{ lesson.position }}
+                                                                </span>
+
+                                                                <strong>
+                                                                    {{ lesson.title }}
+                                                                </strong>
+                                                            </div>
+
+                                                            <a
+                                                                href="{{ path(
+                                                                    'app_lesson_show',
+                                                                    { slug: lesson.slug }
+                                                                ) }}"
+                                                                class="btn btn-primary"
+                                                            >
+                                                                Accéder
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p>
+                                                    Aucune leçon n'est actuellement disponible.
+                                                </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="my-training-card-actions">
+                                        <a
+                                            href="{{ path(
+                                                'app_course_show',
+                                                { slug: item.course.slug }
+                                            ) }}"
+                                            class="btn btn-secondary"
+                                        >
+                                            {% if progress.isCompleted %}
+                                                Voir le cursus
+                                            {% elseif progress.completed > 0 %}
+                                                Continuer le cursus
+                                            {% else %}
+                                                Commencer le cursus
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                </article>
+
+                            {% elseif item.lesson %}
+                                {% set completed =
+                                    lessonProgress[item.lesson.id]|default(false)
+                                %}
+
+                                <article class="card my-training-card">
+                                    <div class="my-training-card-content">
+                                        <div class="training-card-top">
+                                            <span class="training-status training-status-paid">
+                                                Payé
+                                            </span>
+
+                                            {% if completed %}
+                                                <span class="training-status training-status-completed">
+                                                    Terminée
+                                                </span>
+                                            {% endif %}
+                                        </div>
+
+                                        <p class="training-type">
+                                            Leçon
+                                        </p>
+
+                                        <h3>
+                                            {{ item.titleSnapshot }}
+                                        </h3>
+
+                                        <p class="training-price">
+                                            {{ item.unitPrice|number_format(2, ',', ' ') }} €
+                                        </p>
+
+                                        {% if completed %}
+                                            <p>
+                                                Cette leçon a été terminée.
+                                            </p>
+                                        {% else %}
+                                            <p>
+                                                Cette leçon est disponible
+                                                dans votre espace.
+                                            </p>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="my-training-card-actions">
+                                        <a
+                                            href="{{ path(
+                                                'app_lesson_show',
+                                                { slug: item.lesson.slug }
+                                            ) }}"
+                                            class="btn btn-primary"
+                                        >
+                                            {% if completed %}
+                                                Revoir la leçon
+                                            {% else %}
+                                                Accéder à la leçon
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                </article>
+                            {% endif %}
+
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="my-training-section">
+            <div class="section-heading">
+                <div>
+                    <h2 class="section-title">
+                        Achats en attente
+                    </h2>
+
+                    <p>
+                        Ces éléments ont été sélectionnés,
+                        mais leur paiement n'est pas encore confirmé.
+                    </p>
+                </div>
+            </div>
+
+            {% if pendingOrders is empty %}
+                <div class="card empty-state">
+                    <p>
+                        Vous n'avez aucun achat en attente.
+                    </p>
+                </div>
+            {% else %}
+                <div class="my-training-grid">
+                    {% for order in pendingOrders %}
+                        {% for item in order.items %}
+                            <article class="card my-training-card">
+                                <div class="my-training-card-content">
+                                    <span class="training-status training-status-pending">
+                                        En attente
+                                    </span>
+
+                                    {% if item.course %}
+                                        <p class="training-type">
+                                            Cursus complet
+                                        </p>
+                                    {% elseif item.lesson %}
+                                        <p class="training-type">
+                                            Leçon
+                                        </p>
+                                    {% endif %}
+
+                                    <h3>
+                                        {{ item.titleSnapshot }}
+                                    </h3>
+
+                                    <p class="training-price">
+                                        {{ item.unitPrice|number_format(2, ',', ' ') }} €
+                                    </p>
+
+                                    <p class="training-order-reference">
+                                        Commande n°{{ order.id }}
+                                    </p>
+
+                                    <p>
+                                        Le contenu sera accessible lorsque
+                                        le paiement aura été confirmé.
+                                    </p>
+                                </div>
+
+                                <div class="my-training-card-actions">
+                                    <form
+                                        method="post"
+                                        action="{{ path(
+                                            'app_payment_checkout',
+                                            { id: order.id }
+                                        ) }}"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="_token"
+                                            value="{{ csrf_token(
+                                                'payment_checkout_' ~ order.id
+                                            ) }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-primary"
+                                        >
+                                            Payer maintenant
+                                        </button>
+                                    </form>
+
+                                    {% if item.course %}
+                                        <a
+                                            href="{{ path(
+                                                'app_course_show',
+                                                { slug: item.course.slug }
+                                            ) }}"
+                                            class="btn btn-secondary"
+                                        >
+                                            Voir le cursus
+                                        </a>
+                                    {% elseif item.lesson %}
+                                        <a
+                                            href="{{ path(
+                                                'app_lesson_show',
+                                                { slug: item.lesson.slug }
+                                            ) }}"
+                                            class="btn btn-secondary"
+                                        >
+                                            Voir la leçon
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </article>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </section>
+
+        <div class="page-actions">
+            <a
+                href="{{ path('app_training_index') }}"
+                class="btn btn-secondary"
+            >
+                Retour au catalogue
+            </a>
+        </div>
+    </section>
+{% endblock %}
