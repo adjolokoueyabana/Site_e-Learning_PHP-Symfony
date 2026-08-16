@@ -1,4 +1,6 @@
 {
+    "name": "knowledge-learning/knowledge-learning",
+    "description": "Plateforme Symfony d'apprentissage en ligne avec cursus, leçons, achats et certifications.",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
