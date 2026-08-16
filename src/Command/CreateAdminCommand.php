@@ -11,6 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
@@ -45,11 +46,6 @@ class CreateAdminCommand extends Command
                 'lastName',
                 InputArgument::REQUIRED,
                 'Administrator last name'
-            )
-            ->addArgument(
-                'password',
-                InputArgument::REQUIRED,
-                'Administrator password'
             );
     }
 
@@ -69,9 +65,11 @@ class CreateAdminCommand extends Command
             (string) $input->getArgument('lastName')
         );
 
-        $plainPassword = (string) $input->getArgument('password');
-
-        if ($this->userRepository->findOneBy(['email' => $email]) !== null) {
+        if (
+            $this->userRepository->findOneBy([
+                'email' => $email,
+            ]) !== null
+        ) {
             $output->writeln(
                 '<error>Un utilisateur existe déjà avec cette adresse e-mail.</error>'
             );
@@ -86,6 +84,76 @@ class CreateAdminCommand extends Command
         if ($adminRole === null) {
             $output->writeln(
                 '<error>Le rôle ROLE_ADMIN est introuvable.</error>'
+            );
+
+            return Command::FAILURE;
+        }
+
+        /** @var \Symfony\Component\Console\Helper\QuestionHelper $helper */
+        $helper = $this->getHelper('question');
+
+        $passwordQuestion = new Question(
+            'Mot de passe administrateur : '
+        );
+
+        $passwordQuestion->setHidden(true);
+        $passwordQuestion->setHiddenFallback(false);
+
+        $passwordQuestion->setValidator(
+            function (?string $password): string {
+                $password = (string) $password;
+
+                if (trim($password) === '') {
+                    throw new \RuntimeException(
+                        'Le mot de passe ne peut pas être vide.'
+                    );
+                }
+
+                if (mb_strlen($password) < 8) {
+                    throw new \RuntimeException(
+                        'Le mot de passe doit contenir au moins 8 caractères.'
+                    );
+                }
+
+                if (!preg_match('/[A-Z]/', $password)) {
+                    throw new \RuntimeException(
+                        'Le mot de passe doit contenir au moins une lettre majuscule.'
+                    );
+                }
+
+                if (!preg_match('/[a-z]/', $password)) {
+                    throw new \RuntimeException(
+                        'Le mot de passe doit contenir au moins une lettre minuscule.'
+                    );
+                }
+
+                if (!preg_match('/[0-9]/', $password)) {
+                    throw new \RuntimeException(
+                        'Le mot de passe doit contenir au moins un chiffre.'
+                    );
+                }
+
+                if (!preg_match('/[^A-Za-z0-9]/', $password)) {
+                    throw new \RuntimeException(
+                        'Le mot de passe doit contenir au moins un caractère spécial.'
+                    );
+                }
+
+                return $password;
+            }
+        );
+
+        $passwordQuestion->setMaxAttempts(3);
+
+        $plainPassword = $helper->ask(
+            $input,
+            $output,
+            $passwordQuestion
+        );
+
+        if (!is_string($plainPassword)) {
+            $output->writeln(
+                '<error>Impossible de récupérer le mot de passe.</error>'
             );
 
             return Command::FAILURE;

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block meta_description %}
-    La page demandée est introuvable.
+    La page demandée est introuvable sur Knowledge Learning.
 {% endblock %}
 
 {% block body %}
@@ -20,8 +20,8 @@
             </h1>
 
             <p>
-                La page que vous recherchez n'existe pas
-                ou n'est plus disponible.
+                La page que vous recherchez n’existe pas,
+                a été déplacée ou n’est plus disponible.
             </p>
 
             <div class="error-actions">
@@ -29,11 +29,11 @@
                     href="{{ path('app_home') }}"
                     class="btn btn-primary"
                 >
-                    Retour à l'accueil
+                    Retour à l’accueil
                 </a>
 
                 <a
-                    href="{{ path('app_training_catalog') }}"
+                    href="{{ path('app_training_index') }}"
                     class="btn btn-secondary"
                 >
                     Voir le catalogue
