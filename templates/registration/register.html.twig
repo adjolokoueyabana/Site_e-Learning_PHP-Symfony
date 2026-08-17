@@ -106,9 +106,31 @@
                             }
                         ) }}
 
-                        {{ form_widget(
-                            registrationForm.plainPassword.first
-                        ) }}
+                        <div class="password-field">
+                            {{ form_widget(
+                                registrationForm.plainPassword.first,
+                                {
+                                    attr: {
+                                        'data-password-input': ''
+                                    }
+                                }
+                            ) }}
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                data-password-toggle
+                                aria-label="Afficher le mot de passe"
+                                title="Afficher le mot de passe"
+                            >
+                                <span
+                                    class="password-toggle-icon"
+                                    aria-hidden="true"
+                                >
+                                    👁
+                                </span>
+                            </button>
+                        </div>
 
                         <div class="form-error">
                             {{ form_errors(
@@ -128,9 +150,31 @@
                             }
                         ) }}
 
-                        {{ form_widget(
-                            registrationForm.plainPassword.second
-                        ) }}
+                        <div class="password-field">
+                            {{ form_widget(
+                                registrationForm.plainPassword.second,
+                                {
+                                    attr: {
+                                        'data-password-input': ''
+                                    }
+                                }
+                            ) }}
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                data-password-toggle
+                                aria-label="Afficher la confirmation du mot de passe"
+                                title="Afficher la confirmation du mot de passe"
+                            >
+                                <span
+                                    class="password-toggle-icon"
+                                    aria-hidden="true"
+                                >
+                                    👁
+                                </span>
+                            </button>
+                        </div>
 
                         <div class="form-error">
                             {{ form_errors(
