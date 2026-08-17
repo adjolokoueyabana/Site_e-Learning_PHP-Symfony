@@ -1018,12 +1018,10 @@ L’environnement de production doit disposer notamment de :
 
 ### URL de production
 
-Le déploiement est actuellement en cours.
-
-L’URL sera ajoutée ici après la mise en ligne :
+L’application est déployée sur alwaysdata et accessible à l’adresse suivante :
 
 ```text
-À compléter après le déploiement.
+https://superdevop.alwaysdata.net
 ```
 
 ---
