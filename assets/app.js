@@ -56,12 +56,75 @@ function initializePasswordToggles() {
     });
 }
 
+function initializeMobileMenu() {
+    const menuButton = document.querySelector(
+        '[data-menu-toggle]'
+    );
+
+    const navigation = document.querySelector(
+        '[data-main-navigation]'
+    );
+
+    if (!menuButton || !navigation) {
+        return;
+    }
+
+    if (menuButton.dataset.menuToggleInitialized === 'true') {
+        return;
+    }
+
+    menuButton.dataset.menuToggleInitialized = 'true';
+
+    menuButton.addEventListener('click', () => {
+        const menuIsOpen = navigation.classList.toggle('is-open');
+
+        menuButton.classList.toggle(
+            'is-open',
+            menuIsOpen
+        );
+
+        menuButton.setAttribute(
+            'aria-expanded',
+            menuIsOpen ? 'true' : 'false'
+        );
+
+        menuButton.setAttribute(
+            'aria-label',
+            menuIsOpen
+                ? 'Fermer le menu'
+                : 'Ouvrir le menu'
+        );
+    });
+
+    navigation.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+            navigation.classList.remove('is-open');
+            menuButton.classList.remove('is-open');
+
+            menuButton.setAttribute(
+                'aria-expanded',
+                'false'
+            );
+
+            menuButton.setAttribute(
+                'aria-label',
+                'Ouvrir le menu'
+            );
+        });
+    });
+}
+
+function initializeApp() {
+    initializePasswordToggles();
+    initializeMobileMenu();
+}
+
 document.addEventListener(
     'DOMContentLoaded',
-    initializePasswordToggles
+    initializeApp
 );
 
 document.addEventListener(
     'turbo:load',
-    initializePasswordToggles
+    initializeApp
 );

@@ -9,12 +9,6 @@
         href="{{ asset('favicon.png') }}"
     >
 
-    <link
-        rel="icon"
-        type="image/png"
-        href="{{ asset('favicon.png') }}"
-    >
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -58,9 +52,24 @@
                 >
             </a>
 
+            <button
+                type="button"
+                class="menu-toggle"
+                aria-label="Ouvrir le menu"
+                aria-expanded="false"
+                aria-controls="main-navigation"
+                data-menu-toggle
+            >
+                <span class="menu-toggle-bar"></span>
+                <span class="menu-toggle-bar"></span>
+                <span class="menu-toggle-bar"></span>
+            </button>
+
             <nav
+                id="main-navigation"
                 class="main-navigation"
                 aria-label="Navigation principale"
+                data-main-navigation
             >
                 <ul>
                     <li>
