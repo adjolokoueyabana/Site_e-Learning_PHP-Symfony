@@ -218,13 +218,14 @@
 @media print {
     @page {
         size: A4 portrait;
-        margin: 12mm;
+        margin: 10mm;
     }
 
     html,
     body {
         width: 100%;
-        min-height: 100%;
+        height: auto;
+        min-height: 0;
         margin: 0;
         padding: 0;
         background: #ffffff;
@@ -253,38 +254,71 @@
     .certificate-page {
         width: 100%;
         max-width: none;
-        min-height: calc(297mm - 24mm);
+        min-height: 0;
         margin: 0;
         padding: 0;
-        display: flex;
-        align-items: stretch;
+
+        break-inside: avoid;
+        page-break-inside: avoid;
     }
 
     .certificate-document {
         width: 100%;
-        min-height: calc(297mm - 24mm);
+        min-height: 0;
+        margin: 0;
+        padding: 6mm;
         box-sizing: border-box;
-        display: flex;
-        padding: 8mm;
+
         border: 2px solid #00497c;
         background: #ffffff;
+
         break-inside: avoid;
+        page-break-inside: avoid;
     }
 
     .certificate-inner {
         width: 100%;
-        min-height: 100%;
+        min-height: 0;
+        padding: 10mm 12mm;
         box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 18mm 14mm;
+
         border: 1px solid #0074c7;
         text-align: center;
+
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .certificate-inner h1 {
+        margin: 5mm 0 7mm;
+    }
+
+    .certificate-student-name {
+        margin-bottom: 5mm;
+    }
+
+    .certificate-text {
+        margin-bottom: 4mm;
+        line-height: 1.5;
+    }
+
+    .certificate-theme {
+        margin-bottom: 8mm;
+    }
+
+    .certificate-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6mm;
+        max-width: 650px;
+        margin: 0 auto;
+        padding-top: 6mm;
+
+        border-top: 1px solid var(--color-border);
     }
 
     .certificate-signature {
-        margin-top: 18mm;
+        margin-top: 10mm;
         margin-left: auto;
     }
 }
